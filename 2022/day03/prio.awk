@@ -1,4 +1,4 @@
-#!/usr/bin/awk -f
+#!/usr/bin/env awk -f
 #
 BEGIN {
   split("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", a, "")
@@ -11,7 +11,6 @@ BEGIN {
   delete cat
 
   for (l in left) cat[left[l]] = 1
-
   for (r in right) {
     c = right[r]
     if (cat[c]) prio[FNR] = c
@@ -19,7 +18,7 @@ BEGIN {
 }
 
 END {
-  for (p in prio) sum = sum + alphas[prio[p]]
+  for (p in prio) sum += alphas[prio[p]]
   print "sum: " sum
 }
 

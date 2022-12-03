@@ -1,4 +1,4 @@
-#!/usr/bin/awk -f
+#!/usr/bin/env awk -f
 #
 BEGIN {
   split("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", a, "")
@@ -8,8 +8,9 @@ BEGIN {
 {
   split($0, items, "")
   delete cat
+
   for (i in items) cat[items[i]] = 1
-  for (c in cat)  grp[c] = grp[c] + 1
+  for (c in cat) grp[c] += 1
 
   if (FNR % 3 == 0) {
     for (g in grp) if (grp[g] == 3) prio[FNR] = g
@@ -18,7 +19,7 @@ BEGIN {
 }
 
 END {
-  for (p in prio) sum = sum + alphas[prio[p]]
+  for (p in prio) sum += alphas[prio[p]]
   print "sum: " sum
 }
 

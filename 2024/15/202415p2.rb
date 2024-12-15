@@ -11,12 +11,18 @@ def twice(s)
   case s when 'O' then '[]' when '@' then '@.' else s * 2 end.chars
 end
 
+animate = 0
+require 'optparse'
+parser = OptionParser.new
+parser.on('-a FPS', 'animate FPS') { |value| animate = 1 / value.to_i.to_f }
+parser.parse!
+
 wb, mb = File.read(ARGV.shift || 'example.txt').split(/\n\n/)
 warehouse = wb.lines.map { |l| l.strip.chars.map { |s| twice(s) }.flatten }
 moves = mb.gsub(/\n/, '').chars
 pos = robot_pos(warehouse)
 
-moves.each do |d|
+moves.each.with_index do |d, m|
   dr, dc = dirs[d.to_sym]
   nr = pos[0] + dr
   nc = pos[1] + dc
@@ -81,9 +87,16 @@ moves.each do |d|
   warehouse[pos[0]][pos[1]] = '.'
   pos = [nr, nc]
   warehouse[pos[0]][pos[1]] = '@'
+
+  next unless animate.positive?
+
+  sleep animate
+  puts "\e[H\e[2J"
+  puts "#{d} #{m}"
+  warehouse.each { |r| puts r.join }
 end
 
-warehouse.each { |r| puts r.join }
+warehouse.each { |r| puts r.join } if animate.zero?
 
 total = 0
 warehouse.each.with_index { |l, r| l.each.with_index { |s, c| total += r * 100 + c if s == '[' } }
